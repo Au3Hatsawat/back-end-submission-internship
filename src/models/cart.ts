@@ -1,13 +1,13 @@
 import mongoose, { ObjectId, Schema } from "mongoose";
 
 const CartSchema = new mongoose.Schema({
+    total_price : {type: Number, require: true},
     products : [
         {
-            product_Id : {type: Schema.Types.ObjectId, require: true, ref: 'products'},
-            amount : {type: Number, require: true}
+            product_Id : {type: mongoose.Schema.ObjectId , require: true , ref: 'products'},
+            amount : {type: Number , require: true},
         }
-    ],
-    total_price : {type: Number, require: true}
+    ]
 });
 
 export const CartModel = mongoose.model('carts' , CartSchema);
