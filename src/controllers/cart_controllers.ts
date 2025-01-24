@@ -1,60 +1,53 @@
 import express from 'express';
-import { createCart, deleteCartById, getCart, getCartById, updateCartById } from '../models/cart';
+import { CartModel, createCart, deleteCartById, getCart, getCartById, updateCartById } from '../models/cart';
 import { getProductById } from '../models/product';
 import { resolve } from 'path';
 import { rejects } from 'assert';
+import mongoose, { Model } from 'mongoose';
 
-export const newCart = async (req: express.Request , res: express.Response): Promise<any> => {
+export const newCart = async (req: express.Request, res: express.Response): Promise<any> => {
     try {
         const products: Array<any> = req.body.products;
+        const lenght = products.length;
 
-        // const cart = await createCart({
-        //     products, 
-        // });
-        const length = products.length;
-
-        const fetchData = async (): Promise<any> => {
-            return new Promise((resolve , rejects) => {
-                setTimeout(() => {
-                    var total_price = 0;
-                    products.forEach(async (values: any, index: number)=>{
-                        const product = await getProductById(values.product_Id);
-                        total_price += product.product_price * values.amount;
-                        if(index == length-1){
-                            resolve(total_price);
-                        }
-                    });
-                }, 2000);              
-            });
-        }
-
-        const total = await fetchData();
-        console.log(total);
+        const cart = new CartModel({
+            products : [],
+            total_price : 0
+        })
         
-        // var updated_cart;
-        // const length = products.length;
-        // console.log(length);
-        // products.forEach( async (values: any,index: number) => {
-        //     const product = await getProductById(values.product_Id);
-        //     total_price += product.product_price * values.amount;
-        //     console.log(total_price);
-        //     if(index == length-1){
-        //         total_price = total_price - (total_price * ((length-1)*10) / 100);
-        //         console.log(total_price);
-        //         console.log(index);
-        //         updated_cart = await updateCartById(cart._id.toString() , {products,total_price});
-        //     }
-        // });
-        // const get_cart = await getCartById(cart._id.toString());
-        
-        return res.sendStatus(200);
+        await Promise.all(
+            products.map(async (values: any) => {
+                const { product_Id, amount } = values;
+
+                try {
+                    const product = await getProductById(product_Id);
+
+                    // Add the product to the cart
+                    cart.products.push({ product_Id, amount });
+
+                    // Update total price
+                    cart.total_price += product.product_price * amount;
+                    
+                } catch (error) {
+                    console.error(`Error fetching product with ID ${product_Id}:`, error);
+                }
+            })
+        );
+
+        const total_price = cart.total_price;
+        cart.total_price = total_price - (total_price * ((lenght - 1) * 10)/100);
+        await cart.save();
+
+
+        return res.status(200).json(cart).end();
+
     } catch (error) {
         console.log(error);
         return res.sendStatus(400);
     }
 }
 
-export const deleteCart = async (req: express.Request , res: express.Response): Promise<any> => {
+export const deleteCart = async (req: express.Request, res: express.Response): Promise<any> => {
     try {
         const { _id } = req.params;
         const cart = await deleteCartById(_id);
@@ -66,7 +59,7 @@ export const deleteCart = async (req: express.Request , res: express.Response): 
     }
 }
 
-export const getAll = async (req: express.Request , res: express.Response): Promise<any> => {
+export const getAll = async (req: express.Request, res: express.Response): Promise<any> => {
     try {
         const cart = await getCart();
         return res.status(200).json(cart).end();
@@ -75,3 +68,38 @@ export const getAll = async (req: express.Request , res: express.Response): Prom
         return res.sendStatus(400);
     }
 }
+
+export const addProductsToCart = async (req: express.Request , res: express.Response): Promise<any> => {
+    try {
+        const {_id } = req.params;
+        const products:Array<any> = req.body;
+        const cart = await getCartById(_id);
+
+        await Promise.all(
+            products.map(async (values: any) => {
+                const { product_Id, amount } = values;
+
+                try {
+                    const product = await getProductById(product_Id);
+
+                    // Add the product to the cart
+                    cart.products.push({ product_Id, amount });
+
+                    // Update total price
+                    cart.total_price += product.product_price * amount;
+                    
+                } catch (error) {
+                    console.error(`Error fetching product with ID ${product_Id}:`, error);
+                }
+            })
+        );
+
+        await cart.save();
+
+        return res.status(200).json(cart).end();
+        
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+} 

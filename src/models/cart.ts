@@ -12,6 +12,7 @@ const CartSchema = new mongoose.Schema({
 
 export const CartModel = mongoose.model('carts' , CartSchema);
 
+
 //Get carts...
 export const getCart = () => CartModel.find();
 export const getCartById = (_id: string) => CartModel.findById(_id);
