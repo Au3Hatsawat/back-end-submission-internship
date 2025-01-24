@@ -1,5 +1,5 @@
 import express from 'express';
-import { CartModel, createCart, deleteCartById, getCart, getCartById, updateCartById } from '../models/cart';
+import { CartModel, createCart, deleteCartById, findProductById, getCart, getCartById, updateCartById, updateProductInCart } from '../models/cart';
 import { getProductById } from '../models/product';
 import { resolve } from 'path';
 import { rejects } from 'assert';
@@ -22,10 +22,7 @@ export const newCart = async (req: express.Request, res: express.Response): Prom
                 try {
                     const product = await getProductById(product_Id);
 
-                    // Add the product to the cart
                     cart.products.push({ product_Id, amount });
-
-                    // Update total price
                     cart.total_price += product.product_price * amount;
                     
                 } catch (error) {
@@ -71,8 +68,8 @@ export const getAll = async (req: express.Request, res: express.Response): Promi
 
 export const addProductsToCart = async (req: express.Request , res: express.Response): Promise<any> => {
     try {
-        const {_id } = req.params;
-        const products:Array<any> = req.body;
+        const { _id } = req.params;
+        const products:Array<any> = req.body.products;
         const cart = await getCartById(_id);
 
         await Promise.all(
@@ -81,12 +78,16 @@ export const addProductsToCart = async (req: express.Request , res: express.Resp
 
                 try {
                     const product = await getProductById(product_Id);
+                    const inCart = await findProductById(_id , product_Id);
 
-                    // Add the product to the cart
-                    cart.products.push({ product_Id, amount });
-
-                    // Update total price
-                    cart.total_price += product.product_price * amount;
+                    if(inCart.length === 0) {
+                        cart.products.push({ product_Id, amount });
+                        cart.total_price += product.product_price * amount;
+                    } else {
+                        const newAmount = inCart[0].products[0].amount + amount;
+                        cart.total_price += product.product_price * amount;
+                        await updateProductInCart(_id,product_Id,newAmount);
+                    }
                     
                 } catch (error) {
                     console.error(`Error fetching product with ID ${product_Id}:`, error);
@@ -94,6 +95,9 @@ export const addProductsToCart = async (req: express.Request , res: express.Resp
             })
         );
 
+        const total_price = cart.total_price;
+        const productAmount = cart.products.length;
+        cart.total_price = total_price - (total_price * (productAmount - 1)*10/100);
         await cart.save();
 
         return res.status(200).json(cart).end();
