@@ -24,7 +24,6 @@ export const getProductCategoryPerPage = async (req: express.Request , res: expr
         const product = await getProductByCategory(category);
 
         const result = Pagiantion(product , parseInt(_page));
-        console.log(result);
         if(result === 400){
             return res.sendStatus(400);
         }

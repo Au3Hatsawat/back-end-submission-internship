@@ -2,7 +2,7 @@ import express from 'express';
 import { Document } from 'mongoose';
 
 export const Pagiantion = (product: any,page: number) => {
-        const numberPerPage = 4;
+        const numberPerPage = 12;
         const totalPage = product.length / numberPerPage;
         const start = (page - 1) * numberPerPage;
 
