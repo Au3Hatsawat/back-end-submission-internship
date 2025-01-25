@@ -18,6 +18,18 @@ export const newProduct = async (req: express.Request, res: express.Response): P
     }
 };
 
+export const getProductInCategory = async (req: express.Request , res: express.Response): Promise<any> => {
+    try {
+        const { category } = req.params;
+        const product = await getProductByCategory(category);
+
+        return res.status(200).json(product).end();
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+}
+
 export const getProductCategoryPerPage = async (req: express.Request , res: express.Response): Promise<any> => {
     try {
         const { category , _page } = req.params;

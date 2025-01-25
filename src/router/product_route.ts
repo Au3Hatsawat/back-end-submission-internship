@@ -1,5 +1,5 @@
 import express from 'express';
-import { newProduct , getAll , updateProduct , deleteProduct, getById, getByName, getProductPerPage, getProductCategoryPerPage} from '../controllers/product_controllers';
+import { newProduct , getAll , updateProduct , deleteProduct, getById, getByName, getProductPerPage, getProductCategoryPerPage, getProductInCategory} from '../controllers/product_controllers';
 
 export default (router: express.Router) => {
     // Get method to read products...
@@ -8,6 +8,7 @@ export default (router: express.Router) => {
     router.get('/products/name/:product_name' , getByName);
     router.get('/products/pages/:_page' , getProductPerPage);
     router.get('/products/categories/:category/:_page' , getProductCategoryPerPage);
+    router.get('/products/categories/:category' , getProductInCategory);
     // Post method to create new product...
     router.post('/products/add' , newProduct);
     // Put method to update product...
