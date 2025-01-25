@@ -1,13 +1,14 @@
 import express from 'express';
-import { createProduct , getProduct , updateProductById , deleteProductById, getProductById, getProductByName} from '../models/product';
-import { promises } from 'dns';
+import { createProduct , getProduct , updateProductById , deleteProductById, getProductById, getProductByName, getProductByCategory} from '../models/product';
+import { Pagiantion } from '../helpers/pagination';
 
 export const newProduct = async (req: express.Request, res: express.Response): Promise<any> => {
     try {
-        const {product_name , product_price} = req.body;
+        const {product_name , product_price , category} = req.body;
         const product = await createProduct({
             product_name,
             product_price,
+            category
         });
         
         return res.status(200).json(product).end();
@@ -17,10 +18,28 @@ export const newProduct = async (req: express.Request, res: express.Response): P
     }
 };
 
+export const getProductCategoryPerPage = async (req: express.Request , res: express.Response): Promise<any> => {
+    try {
+        const { category , _page } = req.params;
+        const product = await getProductByCategory(category);
+
+        const result = Pagiantion(product , parseInt(_page));
+        console.log(result);
+        if(result === 400){
+            return res.sendStatus(400);
+        }
+
+        return res.status(200).json(result).end();
+    } catch (error) {  
+        console.log(error);
+        return res.sendStatus(400);
+    }
+}
+
 export const getProductPerPage = async (req: express.Request , res: express.Response): Promise<any> => {
     try {
         const product = await getProduct();
-        const numberPerPage = 4;
+        const numberPerPage = 12;
         const totalPage = product.length / numberPerPage;
         const page = parseInt(req.params._page);
         const start = (page - 1) * numberPerPage;
