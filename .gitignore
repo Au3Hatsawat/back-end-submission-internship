@@ -136,4 +136,4 @@ dist
 .pnp.*
 
 # config file
-./src/configs/config.ts
+.\src\configs\config.ts
