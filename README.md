@@ -9,7 +9,7 @@ npm start
 
 ## Api Documentation
 ---
-/api-docs/
+- http://<host>:<port>/api-docs/
 
 
 ## Structure
@@ -36,5 +36,5 @@ npm start
 
 # Todo
 ---
--[x] Swagger api documentation
--[] Unit Test
+- [x] Swagger api documentation
+- [ ] Unit test
