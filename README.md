@@ -1,5 +1,5 @@
 ## Installation & Run
----
+
 ```bash
 git clone https://github.com/Au3Hatsawat/back-end-submission-internship.git
 cd back-end-submission-internship
@@ -8,13 +8,13 @@ npm start
 ```
 
 ## Api Documentation
----
+
 ```
 http://<host>:<port>/api-docs/
 ```
 
 ## Structure
----
+
 ```bash
 ├── src
    ├── index.ts
@@ -36,7 +36,7 @@ http://<host>:<port>/api-docs/
 ```
 
 # Todo
----
+
 - [x] CRUD for products & carts model
 - [x] Pagination for products
 - [X] Add products to cart 
