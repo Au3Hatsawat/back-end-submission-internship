@@ -39,6 +39,7 @@ http://<host>:<port>/api-docs/
 
 - [x] CRUD for products & carts model
 - [x] Pagination for products
-- [X] Add products to cart 
+- [X] Add products to cart
+- [X] Calculate total price with promotion sale
 - [x] Swagger api documentation
 - [ ] Unit test
