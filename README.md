@@ -1,23 +1,40 @@
 ## Installation & Run
-
+---
 ```bash
 git clone https://github.com/Au3Hatsawat/back-end-submission-internship.git
 cd back-end-submission-internship
 npm install
+npm start
 ```
+
+## Api Documentation
+---
+/api-docs/
+
 
 ## Structure
-
+---
 ```bash
-├── app
-│   ├── app.go
-│   ├── handler          // Our API core handlers
-│   │   ├── common.go    // Common response functions
-│   │   ├── projects.go  // APIs for Project model
-│   │   └── tasks.go     // APIs for Task model
-│   └── model
-│       └── model.go     // Models for our application
-├── config
-│   └── config.go        // Configuration
-└── main.go
+├── src
+   ├── index.ts
+   ├── controllers         
+   │   ├── cart_controllers.ts   
+   │   └── product_controller.ts  
+   │   
+   ├── models
+   │   ├── product.ts   
+   │   └── cart.ts     // Models for our application
+   ├── router   
+   │   ├── product_route.ts
+   │   ├── index.ts    
+   │   └── cart_route.ts
+   ├── helpers    
+   │   └── pagination.ts
+   ├── configs    
+       └── config.ts
 ```
+
+# Todo
+---
+-[x] Swagger api documentation
+-[] Unit Test
