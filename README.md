@@ -9,8 +9,9 @@ npm start
 
 ## Api Documentation
 ---
-- http://<host>:<port>/api-docs/
-
+```
+http://<host>:<port>/api-docs/
+```
 
 ## Structure
 ---
@@ -36,5 +37,8 @@ npm start
 
 # Todo
 ---
+- [x] CRUD for products & carts model
+- [x] Pagination for products
+- [X] Add products to cart 
 - [x] Swagger api documentation
 - [ ] Unit test
