@@ -36,7 +36,6 @@ const Options = {
   
   
   const swaggerSpec = swaggerJSDoc(Options);
-  console.log(JSON.stringify(swaggerSpec, null, 2));
 
 
 app.use(compression());
